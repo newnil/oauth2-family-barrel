@@ -1,0 +1,22 @@
+debug: true
+
+security:
+  sessions: ALWAYS
+  ignored: /webjars/**
+  oauth2:
+    sso:
+      login-path: /login
+    client:
+      clientId: test-clientId
+      clientSecret: test-clientId-secret-123
+      accessTokenUri: http://localhost:8082/uaa/oauth/token
+      userAuthorizationUri: http://localhost:8082/uaa/oauth/authorize
+#      clientAuthenticationScheme: form
+    resource:
+#      userInfoUri: http://localhost:8082/me
+      tokenInfoUri: http://localhost:8082/uaa/oauth/check_token
+      preferTokenInfo: true
+      
+logging:
+  level:
+    org.springframework.security: DEBUG

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="bootstrap :: head (page_title='oauth-server-login')">
+<title>Sparklr</title>
+</head>
+
+<body>
+
+	<div class="container">
+
+		<div class="col-xs-12">
+			<h1>Sparklr</h1>
+	
+			<div class="alert alert-danger" role="alert" th:if="${param.containsKey('authentication_error')}">
+				<h1>Woops!</h1>
+	
+				<p class="error">Your login attempt was not successful.</p>
+			</div>
+			<div class="alert alert-danger" role="alert" th:if="${param.containsKey('authorization_error')}">
+				<h1>Woops!</h1>
+	
+				<p class="error">You are not permitted to access that resource.</p>
+			</div>
+	
+			<div class="form-horizontal">
+				<p>We've got a grand total of 2 users: marissa and paul. Go ahead
+					and log in. Marissa's password is "koala" and Paul's password is
+					"emu".</p>
+				<form th:action="@{/login}" method="post" role="form">
+					<fieldset>
+						<legend>
+							<h2>Login</h2>
+						</legend>
+						<div class="form-group">
+							<label for="username">Username:</label> <input id="username"
+								class="form-control" type='text' name='username'
+								value="marissa" />
+						</div>
+						<div class="form-group">
+							<label for="password">Password:</label> <input id="password"
+								class="form-control" type='text' name='password' value="koala" />
+						</div>
+						<button class="btn btn-primary" type="submit">Login</button>
+						<a th:href="@{/}" class="btn btn-default">Cancel</a>
+					</fieldset>
+				</form>
+	
+			</div>
+	
+			<div class="footer">
+				Sample application for <a
+					href="http://github.com/spring-projects/spring-security-oauth"
+					target="_blank">Spring Security OAuth</a>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

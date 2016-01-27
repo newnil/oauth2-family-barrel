@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='oauth-server')">
+<!-- This block will be replaced by template. -->
+</head>
+<body>
+<div class="container">
+	<div class="col-xs-12">
+		<h1>Index Page (client)</h1>
+		<p>Welcome, <span th:text="${#authentication.name}">User Name</span>!</p>
+		<form th:action="@{/logout}" method="post" role="form" sec:authorize="authenticated">
+			<button class="btn btn-default" type="submit">Logout</button>
+		</form>
+		<a th:href="@{/login.html}" sec:authorize="anonymous" class="btn btn-primary">Login</a>
+		<a th:href="@{/resource.html}" class="btn btn-success">Get Data</a>
+	</div>
+</div>
+</body>
+</html>

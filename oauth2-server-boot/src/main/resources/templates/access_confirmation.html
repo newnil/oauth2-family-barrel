@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='oauth-server-access-confirmation')">
+</head>
+<body>
+
+<div class="container">
+	<div class="col-xs-12">
+		<h1>授权页面</h1>
+
+		<div class="alert alert-danger" th:if="${unapprovedExceptionMessage} != null">
+			<h2>我擦，粗错了……</h2>
+
+			<p>
+				Access could not be granted. (<span th:text="${unapprovedExceptionMessage}">For unknown reason.</span>)
+			</p>
+		</div>
+
+		<div sec:authorize="hasRole('ROLE_USER')">
+			<h2>请确认：</h2>
+
+			<p>
+				本人在此授权 "
+				<span th:text="${client.clientId}"></span>
+				" 程序可以获取本人收保护的信息。
+			</p>
+
+			<form id="confirmationForm" name="confirmationForm"
+				th:action="@{/oauth/authorize}" method="post">
+				<input name="user_oauth_approval" value="true" type="hidden" />
+				<ul class="list-unstyled" th:each="scope: ${scopes}">
+						<li>
+							<div class="form-group" th:inline="text">
+								[[ ${scope.key} ]]: <input type="radio" th:name="${scope.key}"
+									value="true" th:checked="${scope.value}" />许可
+									 <input type="radio" th:name="${scope.key}" value="false" th:checked="${!scope.value}" />拒绝
+							</div>
+						</li>
+				</ul>
+				<button class="btn btn-primary" type="submit">提交</button>
+			</form>
+
+		</div>
+		
+		<div class="footer">
+			Sample application for <a
+				href="http://github.com/spring-projects/spring-security-oauth"
+				target="_blank">Spring Security OAuth</a>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

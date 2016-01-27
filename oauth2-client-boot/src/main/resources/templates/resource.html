@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='oauth-server')">
+<!-- This block will be replaced by template. -->
+</head>
+<body>
+<div class="container">
+	<div class="col-xs-12">
+		<h1>Data From Resource:</h1>
+		<p th:text="${data}">loading...</p>
+		<a th:href="@{/}" class="btn btn-default">Back</a>
+	</div>
+</div>
+</body>
+</html>

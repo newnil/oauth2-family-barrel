@@ -1,0 +1,21 @@
+debug: true
+
+server:
+    port: 8083
+    contextPath: /res
+
+security:
+  ignored: /webjars/**
+  oauth2:
+    sso:
+      login-path: /login
+    client:
+      clientId: test-res-client
+      clientSecret: test-res-client-secret-123
+      accessTokenUri: http://localhost:8082/uaa/oauth/token
+      userAuthorizationUri: http://localhost:8082/uaa/oauth/authorize
+#      clientAuthenticationScheme: form
+    resource:
+#      userInfoUri: http://localhost:8082/me
+      tokenInfoUri: http://localhost:8082/uaa/oauth/check_token
+      preferTokenInfo: true

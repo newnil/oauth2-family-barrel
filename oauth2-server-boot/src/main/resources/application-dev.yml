@@ -1,0 +1,25 @@
+
+debug: true
+
+spring:
+    profiles:
+        include: default-user-and-roles
+    jackson:
+        serialization.indent_output: true
+    datasource:
+        url: jdbc:h2:mem:oauth2;DB_CLOSE_DELAY=-1
+        name:
+        username: oauth2
+        password:
+    h2:
+        console:
+            enabled: true
+    jpa:
+        database: H2
+        generate-ddl: true
+        show-sql: true
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG

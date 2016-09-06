@@ -1,14 +1,8 @@
-debug: true
 
-security:
-  sessions: ALWAYS
-  ignored: /webjars/**
+spring:
+  profiles:
+    active: dev
 
 server:
     port: 8082
-    context-path: /uaa
-    
-logging:
-  level:
-    org.springframework.security: DEBUG
-
+    context-path: /security

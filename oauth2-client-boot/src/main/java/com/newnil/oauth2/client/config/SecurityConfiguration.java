@@ -4,6 +4,8 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
+@EnableWebSecurity
 @EnableOAuth2Sso
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -32,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * https://github.com/spring-projects/spring-boot/commit/00f9adafd7bcd23191251ebf6ca50f69ef166077
      *
      * @param oauth2ClientContext client context
-     * @param details client details
+     * @param details             client details
      * @return oauth2RestTemplate bean
      */
     @Bean
@@ -42,26 +45,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/webjars/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-			http
-		.authorizeRequests()
-			.antMatchers("/").permitAll()
-			.anyRequest().authenticated()
-			.and()
-		// 下面是基于Http头的csrf保护，这部分是可选配置
-		.csrf()
-			.csrfTokenRepository(csrfTokenRepository()).and()
-			.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)	
-		// 可选配置结束
-		.logout().logoutUrl("/logout").permitAll()
-			.logoutSuccessUrl("/")
-			.and()
-		.formLogin()
-			.disable()
-		.httpBasic()
-			.disable()
-			;
+        http
+            .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+            // 下面是基于Http头的csrf保护，这部分是可选配置
+            .csrf()
+                .csrfTokenRepository(csrfTokenRepository()).and()
+                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+            // 可选配置结束
+//            .logout().logoutUrl("/logout").permitAll()
+//                .logoutSuccessUrl("/")
+//                .and()
+            .formLogin()
+                .disable()
+            .httpBasic()
+                .disable()
+                ;
 		// @formatter:on
     }
 

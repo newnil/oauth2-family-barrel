@@ -1,8 +1,6 @@
 debug: true
 
 security:
-  sessions: ALWAYS
-  ignored: /webjars/**
   oauth2:
     sso:
       login-path: /login

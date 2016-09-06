@@ -41,15 +41,10 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
     @Transactional
     @Override
     public void afterPropertiesSet() throws Exception {
-        UserEntity defaultUserEntity = userRepository.findOneByUsername(DEFAULT_USERNAME).orElseGet(() -> {
-                    UserEntity u = UserEntity.builder()
-                            .username(DEFAULT_USERNAME)
-                            .password(passwordEncoder.encode(DEFAULT_PASSWORD))
-                            .build();
-                    u.setCreatedBy(DEFAULT_USERNAME);
-                    u.setLastModifiedBy(DEFAULT_USERNAME);
-                    return userRepository.save(u);
-                }
+        UserEntity defaultUserEntity = userRepository.findOneByUsername(DEFAULT_USERNAME).orElseGet(() -> userRepository.save(UserEntity.builder()
+                .username(DEFAULT_USERNAME)
+                .password(passwordEncoder.encode(DEFAULT_PASSWORD))
+                .build())
         );
 
         List<RoleEntity> defaultRoleEntities = new ArrayList<>();
@@ -60,12 +55,7 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
         );
 
         defaultRoleEntities.stream().forEach(
-                roleEntity -> {
-                    UserRoleXRef urx = UserRoleXRef.builder().user(defaultUserEntity).role(roleEntity).build();
-                    urx.setCreatedBy(DEFAULT_USERNAME);
-                    urx.setLastModifiedBy(DEFAULT_USERNAME);
-                    userRoleXrefRepository.save(urx);
-                }
+                roleEntity -> userRoleXrefRepository.save(UserRoleXRef.builder().user(defaultUserEntity).role(roleEntity).build())
         );
     }
 }

@@ -1,19 +1,13 @@
 package com.newnil.cas.oauth2.provider.controller;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.newnil.cas.oauth2.provider.config.OAuth2ServerConfig.ClientIdsInMemory;
+import com.newnil.cas.oauth2.provider.oauth.SparklrUserApprovalHandler;
+import com.newnil.cas.oauth2.provider.service.OAuth2DatabaseClientDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -25,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.newnil.cas.oauth2.provider.config.OAuth2ServerConfig.ClientIdsInMemory;
-import com.newnil.cas.oauth2.provider.oauth.SparklrUserApprovalHandler;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class AdminController {
@@ -38,7 +35,7 @@ public class AdminController {
 	private ConsumerTokenServices tokenServices;
 
 	@Autowired
-	private ClientDetailsService clientDetails;
+	private OAuth2DatabaseClientDetailsService clientDetails;
 
 	@Autowired
 	private TokenStore tokenStore;

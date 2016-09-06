@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.newnil</groupId>
+		<artifactId>oauth2-family-barrel-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>./parent</relativePath>
+	</parent>
+	
+	<artifactId>oauth2-family-barrel-aggregator</artifactId>
+	<packaging>pom</packaging>
+	
+	<name>OAuth2 Family Barrel (aggregator project)</name>
+	
+	<modules>
+		<module>parent</module>
+		
+		<module>oauth2-server-boot</module>
+		<module>oauth2-client-boot</module>
+		
+		<module>resourceserver</module>
+
+	</modules>
+	
+</project>

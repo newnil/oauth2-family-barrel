@@ -3,25 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.newnil</groupId>
 	<artifactId>oauth2-server-boot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>oauth2-server-boot</name>
-	<description>Demo project for Spring Boot</description>
+	<name>OAuth2-Server-Demo-Project</name>
 
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.3.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.newnil</groupId>
+		<artifactId>oauth2-family-barrel-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -59,13 +51,11 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
-			<version>3.3.6</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.webjars</groupId>
 		    <artifactId>jquery</artifactId>
-		    <version>1.11.3</version>
 		</dependency>
 		
 		<dependency>

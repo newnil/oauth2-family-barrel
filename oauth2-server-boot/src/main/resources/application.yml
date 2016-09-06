@@ -6,7 +6,7 @@ security:
 
 server:
     port: 8082
-    contextPath: /uaa
+    context-path: /uaa
     
 logging:
   level:

@@ -7,15 +7,15 @@ security:
     sso:
       login-path: /login
     client:
-      clientId: test-clientId
-      clientSecret: test-clientId-secret-123
-      accessTokenUri: http://localhost:8082/uaa/oauth/token
-      userAuthorizationUri: http://localhost:8082/uaa/oauth/authorize
+      client-id: test-clientId
+      client-secret: test-clientId-secret-123
+      access-token-uri: http://localhost:8082/uaa/oauth/token
+      user-authorization-uri: http://localhost:8082/uaa/oauth/authorize
 #      clientAuthenticationScheme: form
     resource:
 #      userInfoUri: http://localhost:8082/me
-      tokenInfoUri: http://localhost:8082/uaa/oauth/check_token
-      preferTokenInfo: true
+      token-info-uri: http://localhost:8082/uaa/oauth/check_token
+      prefer-token-info: true
       
 logging:
   level:

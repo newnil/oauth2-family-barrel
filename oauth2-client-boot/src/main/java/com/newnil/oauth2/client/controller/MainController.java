@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
 
 	@Autowired
-	OAuth2RestTemplate template;
+	private OAuth2RestTemplate template;
 	
 	@RequestMapping("/")
 	public String homePage(Authentication auth) {

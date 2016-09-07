@@ -48,7 +48,7 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
         );
 
         List<RoleEntity> defaultRoleEntities = new ArrayList<>();
-        Arrays.stream(DEFAULT_ROLES).map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role).forEach(
+        Arrays.stream(DEFAULT_ROLES).forEach(
                 role -> defaultRoleEntities.add(roleRepository.findOneByName(role).orElseGet(
                         () -> roleRepository.save(RoleEntity.builder().name(role).build())
                 ))

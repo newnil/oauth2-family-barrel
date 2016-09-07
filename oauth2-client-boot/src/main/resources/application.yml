@@ -5,8 +5,8 @@ security:
     sso:
       login-path: /login
     client:
-      client-id: test-clientId
-      client-secret: test-clientId-secret-123
+      client-id: test-client-id
+      client-secret: test-client-id-secret-123
       access-token-uri: http://localhost:8082/security/oauth/token
       user-authorization-uri: http://localhost:8082/security/oauth/authorize
 #      clientAuthenticationScheme: form

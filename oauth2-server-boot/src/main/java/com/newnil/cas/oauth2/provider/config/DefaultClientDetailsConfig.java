@@ -44,10 +44,15 @@ public class DefaultClientDetailsConfig implements InitializingBean {
         ).collect(Collectors.toList()));
 
         BaseClientDetails clientDetails = new BaseClientDetails("test-client-id", null, "read,write,trust", "authorization_code", null);
-        clientDetails.setClientSecret("test-secret");
+        clientDetails.setClientSecret("test-client-id-secret-123");
         clientDetails.setRegisteredRedirectUri(Collections.emptySet());
 
         oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
 
+        clientDetails = new BaseClientDetails("test-res-client", null, null, null, null);
+        clientDetails.setClientSecret("test-res-client-secret-123");
+        clientDetails.setRegisteredRedirectUri(Collections.emptySet());
+
+        oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
     }
 }

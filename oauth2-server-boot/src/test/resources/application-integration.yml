@@ -1,0 +1,19 @@
+
+debug: true
+
+spring:
+    jackson:
+        serialization.indent_output: true
+    datasource:
+        url: jdbc:h2:mem:oauth2;DB_CLOSE_ON_EXIT=FALSE
+        name:
+        username: oauth2
+        password:
+    h2:
+        console:
+            enabled: true
+    jpa:
+        database: H2
+        generate-ddl: true
+        show-sql: true
+

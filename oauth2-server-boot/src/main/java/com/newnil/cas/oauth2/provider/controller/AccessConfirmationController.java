@@ -1,9 +1,5 @@
 package com.newnil.cas.oauth2.provider.controller;
 
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -16,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Controller for retrieving the model for and displaying the confirmation page for access to a protected resource.

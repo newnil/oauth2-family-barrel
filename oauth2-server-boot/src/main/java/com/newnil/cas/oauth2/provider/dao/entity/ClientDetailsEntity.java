@@ -6,8 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(of = "clientId", callSuper = false)
+@ToString(exclude = "clientSecret", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,10 +16,13 @@ import java.util.Set;
 @Table(name = "client_details")
 public class ClientDetailsEntity extends AbstractAuditable<Long> {
 
+    @NonNull
     @NotNull
     @Column(name = "client_id", unique = true, nullable = false, length = 200)
     private String clientId;
 
+    @NonNull
+    @NotNull
     @Column(name = "client_secret", nullable = false)
     private String clientSecret;
 
@@ -28,20 +32,20 @@ public class ClientDetailsEntity extends AbstractAuditable<Long> {
     @Column(name = "refresh_token_validity_seconds")
     private Integer refreshTokenValiditySeconds;
 
-    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @Singular
+    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ClientDetailsToAuthorizedGrantTypeXrefEntity> authorizedGrantTypeXrefs;
 
-    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @Singular
+    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ClientDetailsToScopesXrefEntity> scopeXrefs;
 
-    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @Singular
+    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ClientDetailsToResourceIdXrefEntity> resourceIdXrefs;
 
-    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @Singular("redirectUri")
+    @OneToMany(mappedBy = "clientDetails", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<RedirectUriEntity> redirectUris;
 
 }

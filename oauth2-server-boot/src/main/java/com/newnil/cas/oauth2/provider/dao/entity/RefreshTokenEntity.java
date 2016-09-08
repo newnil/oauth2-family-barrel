@@ -6,10 +6,12 @@ import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(of = "tokenId", callSuper = false)
+@ToString(of = "tokenId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,15 +19,21 @@ import java.util.Set;
 @Table(name = "refresh_token")
 public class RefreshTokenEntity extends AbstractAuditable<Long> {
 
-    @Column(name = "token_id", nullable = false, unique = true)
+    @NonNull
+    @NotNull
+    @Column(name = "token_id", nullable = false, unique = true, length = 36)
     private String tokenId;
 
+    @NonNull
+    @NotNull
     @Convert(converter = OAuth2RefreshTokenPersistenceConverters.class)
     @Column(name = "serialized_token", nullable = false)
     private OAuth2RefreshToken token;
 
+    @NonNull
+    @NotNull
     @Lob
-    @Column(name = "serialized_authentication")
+    @Column(name = "serialized_authentication", nullable = false)
     private OAuth2Authentication authentication;
 
     @OneToMany(mappedBy = "refreshToken", fetch = FetchType.LAZY)

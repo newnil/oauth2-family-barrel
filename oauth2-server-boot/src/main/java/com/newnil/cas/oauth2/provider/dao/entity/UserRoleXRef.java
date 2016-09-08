@@ -3,9 +3,10 @@ package com.newnil.cas.oauth2.provider.dao.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(of = {"user", "role"}, callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -13,10 +14,14 @@ import javax.persistence.*;
 @Table(name = "user_role_xref")
 public class UserRoleXRef extends AbstractAuditable<Long> {
 
+    @NonNull
+    @NotNull
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @NonNull
+    @NotNull
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;

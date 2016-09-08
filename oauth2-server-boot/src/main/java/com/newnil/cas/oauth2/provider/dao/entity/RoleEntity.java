@@ -6,9 +6,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(of = "name", callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -16,6 +17,8 @@ import javax.persistence.Table;
 @Table(name = "roles")
 public class RoleEntity extends AbstractPersistable<Long> {
 
+    @NonNull
+    @NotNull
     @Column(name = "role_name", nullable = false, unique = true, length = 100)
     private String name;
 

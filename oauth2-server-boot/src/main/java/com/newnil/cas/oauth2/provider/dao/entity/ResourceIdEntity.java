@@ -2,15 +2,13 @@ package com.newnil.cas.oauth2.provider.dao.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(of = "value", callSuper = false)
+@ToString(of = "value", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,11 +16,12 @@ import java.util.Set;
 @Table(name = "resource")
 public class ResourceIdEntity extends AbstractAuditable<Long> {
 
+    @NonNull
     @NotNull
     @Column(name = "value", nullable = false)
     private String value;
 
-    @OneToMany(mappedBy = "resourceId")
     @Singular
+    @OneToMany(mappedBy = "resourceId", fetch = FetchType.LAZY)
     private Set<ClientDetailsToResourceIdXrefEntity> clientDetailsToResourceIdXrefs;
 }

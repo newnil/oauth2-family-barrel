@@ -5,6 +5,7 @@ import com.newnil.cas.oauth2.provider.dao.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@RequestMapping("/roles")
 @Controller
+@RequestMapping("/roles")
+@PreAuthorize("hasRole('ROLE_USER')")
 public class RoleAdminController {
 
     @Autowired
@@ -32,8 +34,9 @@ public class RoleAdminController {
         return "roles/roles";
     }
 
-    private static final Pattern ROLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z_]+$");
+    private static final Pattern ROLE_NAME_PATTERN = Pattern.compile("^[A-Z_]+$");
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
     public String createRole(@RequestParam("roleName") String roleName, RedirectAttributes attributes) {
@@ -49,7 +52,7 @@ public class RoleAdminController {
             }
 
         } else {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("角色名 " + roleName + " 含有非法字符。（只能使用[a-zA-Z_]）"));
+            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("角色名 " + roleName + " 含有非法字符。（只能使用[A-Z_]）"));
             attributes.addFlashAttribute("roleName", roleName);
         }
         return "redirect:/roles";
@@ -58,6 +61,7 @@ public class RoleAdminController {
     private static final String[] INVINCIBLE_ROLES = {"ADMIN", "USER"};
     private static final List<String> INVINCIBLE_ROLES_LIST = Arrays.asList(INVINCIBLE_ROLES);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(path = "/_remove/{roleName}", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
     public String removeRole(@PathVariable("roleName") String roleName, RedirectAttributes attributes) {
 

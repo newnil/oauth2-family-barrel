@@ -15,14 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
 @Profile("default-user-and-roles")
 public class DefaultUserAndRolesConfig implements InitializingBean {
 
-    private static final String DEFAULT_USERNAME = "admin";
-    private static final String DEFAULT_PASSWORD = "admin888";
+    private static final String DEFAULT_ADMIN_USERNAME = "admin";
+    private static final String DEFAULT_ADMIN_PASSWORD = "admin888";
+
+    private static final String DEFAULT_USER_USERNAME = "user";
+    private static final String DEFAULT_USER_PASSWORD = "user888";
 
     private static final String[] DEFAULT_ROLES = {"ADMIN", "USER"};
 
@@ -41,12 +45,6 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
     @Transactional
     @Override
     public void afterPropertiesSet() throws Exception {
-        UserEntity defaultUserEntity = userRepository.findOneByUsername(DEFAULT_USERNAME).orElseGet(() -> userRepository.save(UserEntity.builder()
-                .username(DEFAULT_USERNAME)
-                .password(passwordEncoder.encode(DEFAULT_PASSWORD))
-                .build())
-        );
-
         List<RoleEntity> defaultRoleEntities = new ArrayList<>();
         Arrays.stream(DEFAULT_ROLES).forEach(
                 role -> defaultRoleEntities.add(roleRepository.findOneByName(role).orElseGet(
@@ -54,8 +52,27 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
                 ))
         );
 
-        defaultRoleEntities.stream().forEach(
-                roleEntity -> userRoleXrefRepository.save(UserRoleXRef.builder().user(defaultUserEntity).role(roleEntity).build())
+        UserEntity defaultAdminUserEntity = userRepository.findOneByUsername(DEFAULT_ADMIN_USERNAME).orElseGet(() -> userRepository.save(UserEntity.builder()
+                .username(DEFAULT_ADMIN_USERNAME)
+                .password(passwordEncoder.encode(DEFAULT_ADMIN_PASSWORD))
+                .build())
         );
+
+
+        defaultRoleEntities.stream().forEach(
+                roleEntity -> userRoleXrefRepository.save(UserRoleXRef.builder().user(defaultAdminUserEntity).role(roleEntity).build())
+        );
+
+        UserEntity defaultUserEntity = userRepository.findOneByUsername(DEFAULT_USER_USERNAME).orElseGet(() -> {
+            UserEntity userEntity = UserEntity.builder()
+                    .username(DEFAULT_USER_USERNAME)
+                    .password(passwordEncoder.encode(DEFAULT_USER_PASSWORD))
+                    .build();
+
+            roleRepository.findOneByName("USER").ifPresent(roleEntity ->
+                    userEntity.setRoles(Collections.singletonList(UserRoleXRef.builder().user(userEntity).role(roleEntity).build())));
+
+            return userRepository.save(userEntity);
+        });
     }
 }

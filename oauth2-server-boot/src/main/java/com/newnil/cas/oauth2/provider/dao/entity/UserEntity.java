@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(of = "username", callSuper = false)
-@ToString(exclude = "password", callSuper = false)
+@ToString(of = "username", callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -30,6 +30,6 @@ public class UserEntity extends AbstractAuditable<Long> {
     private String password;
 
     @Singular
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserRoleXRef> roles;
 }

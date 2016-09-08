@@ -6,12 +6,21 @@
 <body>
 <div class="container">
 	<div class="col-xs-12">
+
 		<h1>Index Page</h1>
 		<p>Welcome, <span th:text="${#authentication.name}">User Name</span>!</p>
+
+
 		<form th:action="@{/logout}" method="post" role="form" sec:authorize="authenticated">
 			<button class="btn btn-default" type="submit">Logout</button>
 		</form>
+
 		<a th:href="@{/login.html}" sec:authorize="anonymous" class="btn btn-primary">Login</a>
+
+		<a th:href="@{/roles}" sec:authorize="authenticated" class="btn btn-primary">角色管理</a>
+
+		<a th:href="@{/users}" sec:authorize="authenticated" class="btn btn-primary">用户管理</a>
+
 	</div>
 </div>
 </body>

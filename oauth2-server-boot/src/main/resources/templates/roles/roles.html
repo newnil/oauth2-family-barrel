@@ -23,14 +23,14 @@
                 <tr th:each="role, iterStat : ${roles}">
                     <td th:text="${iterStat.count}">#</td>
                     <td th:text="${role.name}">Role Name</td>
-                    <td><a class="btn btn-danger" href="#" th:href="@{|/roles/_remove/${role.name}|}" role="button">删除</a></td>
+                    <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/roles/_remove/${role.name}|}" role="button">删除</a></td>
                 </tr>
             </tbody>
         </table>
         <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${roles})"></nav>
 
     </div>
-    <div class="col-xs-4" sec:authorize="hasRole('ROLE_USER')">
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')">
         <h1>增加角色</h1>
         <hr/>
         <form action="#" th:action="@{''}" method="post">

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(of = {"user", "role"}, callSuper = false)
+@ToString(of = "role", callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

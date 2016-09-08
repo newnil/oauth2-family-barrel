@@ -18,6 +18,8 @@ spring:
         database: H2
         generate-ddl: true
         show-sql: true
+    thymeleaf:
+        cache: false
 
 
 logging:

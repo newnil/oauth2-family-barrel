@@ -26,5 +26,23 @@
   <body>
     <h1>你好，世界！</h1>
 
+        <nav aria-label="Page navigation" th:fragment="page-navigation(pageable)">
+          <ul class="pagination">
+            <li th:class="${pageable.hasPrevious()}? '' : 'disabled' ">
+              <a href="#" th:href="${pageable.hasPrevious()}? @{''(page=${pageable.number - 1})} : '#' " aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li th:each="number : ${#numbers.sequence(1, pageable.totalPages)}">
+              <a th:href="@{'' (page=${number - 1})}" href="#" th:text="${number}">1</a>
+            </li>
+            <li th:class="${pageable.hasNext()}? '' : 'disabled' ">
+              <a href="#" th:href="${pageable.hasNext()}? @{''(page=${pageable.number + 1})} : '#' " aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
   </body>
 </html>

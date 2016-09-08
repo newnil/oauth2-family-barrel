@@ -11,19 +11,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addErrorMessage;
+import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addSuccessMessage;
+
 @Controller
 @RequestMapping("/users")
-@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserAdminController {
 
     @Autowired
@@ -36,64 +40,174 @@ public class UserAdminController {
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
-    public String listAllUsers(Model model, Pageable pageable) {
+    public String listAllUsers(@RequestParam(name = "edit", required = false) String editUsername, Model model, Pageable pageable) {
 
         model.addAttribute("users", userRepository.findAll(pageable));
         model.addAttribute("roles", roleRepository.findAll());
+        if (!StringUtils.isEmpty(editUsername)) {
+            model.addAttribute("editUser", userRepository.findOneByUsername(editUsername).map(
+                    userEntity -> {
+                        // convert userEntity -> user(map)
+                        Map<String, Object> editUserMap = new HashMap<>();
+                        editUserMap.put("username", userEntity.getUsername());
+                        editUserMap.put("roles", userEntity.getRoles().stream().map(xref -> xref.getRole().getName()).collect(Collectors.toList()));
+                        return editUserMap;
+                    }).orElse(null));
+        }
         return "users/users";
     }
 
     private static final Pattern USER_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
     private static final Pattern PASSWORD_WORD_PATTERN = Pattern.compile("^[a-zA-Z0-9]{6,}$");
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
+    @RequestMapping(path = "/_create", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
             produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
-    public String createUser(@RequestParam("username") String username, @RequestParam("password") String password,
-                             @RequestParam("password-confirmation") String passwordConfirmation, @RequestParam(name = "roles", defaultValue = "") List<String> roles, RedirectAttributes attributes) {
-
-        if (userRepository.findOneByUsername(username).isPresent()) {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("用户名 " + username + " 已被注册"));
-        }
+    public String createUser(@RequestParam("username") String username,
+                             @RequestParam("password") String password,
+                             @RequestParam("password-confirmation") String passwordConfirmation,
+                             @RequestParam(name = "roles", defaultValue = "") List<String> roles,
+                             RedirectAttributes attributes) {
 
         if (!USER_NAME_PATTERN.matcher(username).matches()) {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("用户名 " + username + " 含有非法字符。（只能使用[a-zA-Z0-9_]）"));
+            addErrorMessage(attributes, "用户名 " + username + " 含有非法字符。（只能使用[a-zA-Z0-9_]）");
+            attributes.addFlashAttribute("username", username);
+            attributes.addFlashAttribute("selectedRoles", roles);
+            return "redirect:/users";
         }
 
+        if (userRepository.findOneByUsername(username).isPresent()) {
+            addErrorMessage(attributes, "用户名 " + username + " 已被注册");
+            attributes.addFlashAttribute("username", username);
+            attributes.addFlashAttribute("selectedRoles", roles);
+            return "redirect:/users";
+        }
+
+        if (!checkPasswordValidation(password, passwordConfirmation, attributes)) {
+            attributes.addFlashAttribute("username", username);
+            attributes.addFlashAttribute("selectedRoles", roles);
+            return "redirect:/users";
+        }
+
+        if (!checkRoleValidation(roles, attributes)) {
+            attributes.addFlashAttribute("username", username);
+            attributes.addFlashAttribute("selectedRoles", roles);
+            return "redirect:/users";
+        }
+
+
+        UserEntity userEntity = UserEntity.builder().username(username).password(passwordEncoder.encode(password)).build();
+
+        userEntity.setRoles(roles.stream().map(
+                role -> UserRoleXRef.builder().user(userEntity).role(roleRepository.findOneByName(role)
+                        // 之前都检查过了应该不会抛错
+                        .<RuntimeException>orElseThrow(() -> new RuntimeException("角色 " + role + " 不存在。"))).build()
+        ).collect(Collectors.toList()));
+
+        userRepository.save(userEntity);
+
+        addSuccessMessage(attributes, "用户 " + username + " 创建成功。");
+
+        return "redirect:/users";
+    }
+
+    @RequestMapping(path = "/_update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
+    public String updateUser(@RequestParam("username") String username,
+                             @RequestParam(name = "password", required = false) String password,
+                             @RequestParam(name = "password-confirmation", required = false) String passwordConfirmation,
+                             @RequestParam(name = "roles", defaultValue = "") List<String> roles,
+                             RedirectAttributes attributes) {
+
+        if (!StringUtils.isEmpty(password)) {
+            if (!checkPasswordValidation(password, passwordConfirmation, attributes)) {
+                return "redirect:/users";
+            }
+        }
+
+        if (!checkRoleValidation(roles, attributes)) {
+            return "redirect:/users";
+        }
+
+        userRepository.findOneByUsername(username).map(userEntity -> {
+
+            if (!StringUtils.isEmpty(password)) {
+                userEntity.setPassword(passwordEncoder.encode(password));
+            }
+
+            // removes
+            List<UserRoleXRef> removes = userEntity.getRoles().stream().filter(xref -> !roles.contains(xref.getRole().getName())).collect(Collectors.toList());
+            // origin values
+            List<String> originValues = userEntity.getRoles().stream().map(xref -> xref.getRole().getName()).collect(Collectors.toList());
+            // new ones
+            List<UserRoleXRef> newOnes = roles.stream().filter(role -> !originValues.contains(role)).map(
+                    role -> UserRoleXRef.builder().user(userEntity).role(roleRepository.findOneByName(role)
+                            // 之前都检查过了应该不会抛错
+                            .<RuntimeException>orElseThrow(() -> new RuntimeException("找不到 " + role + " 角色"))).build()
+            ).collect(Collectors.toList());
+
+            userEntity.getRoles().removeAll(removes);
+            userEntity.getRoles().addAll(newOnes);
+
+            return userRepository.save(userEntity);
+        }).orElseGet(() -> {
+            addErrorMessage(attributes, "用户 " + username + " 不存在。");
+            return null;
+        });
+
+        return "redirect:/users";
+    }
+
+    private boolean checkRoleValidation(List<String> roles, RedirectAttributes attributes) {
+        List<String> invalidRoles = new ArrayList<>();
+        roles.forEach(role -> {
+            if (!roleRepository.findOneByName(role).isPresent()) {
+                invalidRoles.add(role);
+            }
+        });
+
+        invalidRoles.forEach(role -> addErrorMessage(attributes, "角色 " + role + " 不存在。"));
+
+        return invalidRoles.isEmpty();
+    }
+
+    private boolean checkPasswordValidation(String password, String passwordConfirmation, RedirectAttributes attributes) {
+
+        boolean invalid = false;
+
         if (!PASSWORD_WORD_PATTERN.matcher(password).matches()) {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("密码含有非法字符。（只能使用[a-zA-Z0-9]，至少6位）"));
+            addErrorMessage(attributes, "密码含有非法字符。（只能使用[a-zA-Z0-9]，至少6位）");
+            invalid = true;
         }
 
         if (!password.equals(passwordConfirmation)) {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("重复密码不正确"));
+            addErrorMessage(attributes, "重复密码不正确");
+            invalid = true;
         }
 
-        if (roles.isEmpty()) {
-            attributes.addFlashAttribute("dangerMessages", Collections.singletonList("至少选择一个角色。"));
+        return !invalid;
+    }
+
+    private static final String[] INVINCIBLE_USERS = {"admin", "user"};
+    private static final List<String> INVINCIBLE_USERS_LIST = Arrays.asList(INVINCIBLE_USERS);
+
+    @RequestMapping(path = "/_remove/{username}", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
+    public String deleteUser(@PathVariable("username") String username, RedirectAttributes attributes) {
+        if (INVINCIBLE_USERS_LIST.contains(username)) {
+            addErrorMessage(attributes, "不能删除用户：" + username);
         } else {
-            roles.forEach(role -> roleRepository.findOneByName(role).orElseGet(() -> {
-                attributes.addFlashAttribute("dangerMessages", Collections.singletonList("角色 " + role + " 不存在。"));
+
+            userRepository.findOneByUsername(username).map(userEntity -> {
+                userRepository.delete(userEntity);
+                addSuccessMessage(attributes, "用户 " + username + " 已删除。");
+                return userEntity;
+            }).orElseGet(() -> {
+                addSuccessMessage(attributes, "没有找到 " + username + " 用户。");
                 return null;
-            }));
-        }
-
-
-        if (!attributes.getFlashAttributes().isEmpty()) {
-            attributes.addFlashAttribute("username", username);
-
-        } else {
-
-            UserEntity userEntity = UserEntity.builder().username(username).password(passwordEncoder.encode(password)).build();
-            userEntity.setRoles(roles.stream().map(
-                    role -> UserRoleXRef.builder().user(userEntity).role(roleRepository.findOneByName(role).<RuntimeException>orElseThrow(() -> new RuntimeException("角色 " + role + " 不存在。"))).build()
-            ).collect(Collectors.toList()));
-
-            userRepository.save(userEntity);
-            attributes.addFlashAttribute("successMessages", Collections.singletonList("用户 " + username + " 创建成功。"));
-
+            });
         }
 
         return "redirect:/users";
     }
+
 
 }

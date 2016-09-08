@@ -30,6 +30,6 @@ public class UserEntity extends AbstractAuditable<Long> {
     private String password;
 
     @Singular
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoleXRef> roles;
 }

@@ -5,6 +5,9 @@
 <body>
 <div class="container">
     <div class="col-xs-12" th:include="messages :: messages"></div>
+    <div class="col-xs-12">
+        <a href="#" th:href="@{/}" class="btn btn-primary">返回首页</a>
+    </div>
     <div class="col-xs-8">
         <h1>用户列表</h1>
         <hr/>
@@ -27,17 +30,50 @@
                 <td>
                     <span class="label label-primary" th:each="roleXref : ${user.roles}" th:text="${roleXref.role.name}">ADMIN</span>
                 </td>
-                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/users/_remove/${user.username}|}" role="button">删除</a></td>
+                <td>
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/users/_remove/${user.username}|}" role="button">删除</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-warning" href="#" th:href="@{'' (edit=${user.username})}" role="button">编辑</a>
+                </td>
             </tr>
             </tbody>
         </table>
         <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${users})"></nav>
 
     </div>
-    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')">
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${editUser}">
+        <h1>编辑用户</h1>
+        <hr/>
+        <form action="#" th:action="@{/users/_update}" method="post" th:object="${editUser}">
+            <div class="form-group">
+                <label for="displayEditUsername">用户名</label>
+                <input class="form-control" id="displayEditUsername" type="text" placeholder="你的用户名" th:value="*{username}" disabled="disabled" />
+                <input type="hidden" th:value="*{username}" name="username"/>
+            </div>
+            <div class="form-group">
+                <label for="update-password">密码</label>
+                <input type="password" class="form-control" id="update-password" name="password" placeholder="密码" />
+            </div>
+            <div class="form-group">
+                <label for="update-password-confirmation">重复密码</label>
+                <input type="password" class="form-control" id="update-password-confirmation" name="password-confirmation" placeholder="密码" />
+            </div>
+            <div class="form-group">
+                <label>角色</label>
+                <div class="checkbox">
+                    <label th:each="role : ${roles}">
+                        <input type="checkbox" name="roles" value="ROLE" th:value="${role.name}" th:checked="${#lists.contains(editUser.roles, role.name)}" />
+                        <span class="label label-primary" th:text="${role.name}">角色</span>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a type="button" class="btn btn-default" href="#" th:href="@{/users}">取消</a>
+        </form>
+    </div>
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${editUser}">
         <h1>增加用户</h1>
         <hr/>
-        <form action="#" th:action="@{''}" method="post">
+        <form action="#" th:action="@{/users/_create}" method="post">
             <div class="form-group">
                 <label for="username">用户名</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="用户名" required="required" value="" th:value="${username}" />
@@ -54,12 +90,13 @@
                 <label>角色</label>
                 <div class="checkbox">
                     <label th:each="role : ${roles}">
-                        <input type="checkbox" id="roles" name="roles" value="ROLE" th:value="${role.name}" />
+                        <input type="checkbox" name="roles" value="ROLE" th:value="${role.name}" th:checked="${#lists.contains(#objects.nullSafe(selectedRoles, {}), role.name)}" />
                         <span class="label label-primary" th:text="${role.name}">角色</span>
                     </label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-default">提交</button>
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a type="button" class="btn btn-default" href="#" th:href="@{/users}">取消</a>
         </form>
     </div>
 </div>

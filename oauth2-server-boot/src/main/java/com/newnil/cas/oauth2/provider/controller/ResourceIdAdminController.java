@@ -45,7 +45,7 @@ public class ResourceIdAdminController {
             if (resourceIdRepository.findOneByValue(resId).isPresent()) {
                 // error message
                 addErrorMessage(attributes, "资源ID " + resId + " 已经存在。");
-                attributes.addFlashAttribute("grantTypeName", resId);
+                attributes.addFlashAttribute("resId", resId);
             } else {
                 resourceIdRepository.save(ResourceIdEntity.builder().value(resId).build());
                 // success message

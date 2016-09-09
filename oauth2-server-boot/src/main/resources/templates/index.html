@@ -26,6 +26,8 @@
 		<hr/>
 
 		<a th:href="@{/grantTypes}" sec:authorize="authenticated" class="btn btn-primary">授权方式管理</a>
+		
+		<a th:href="@{/scopes}" sec:authorize="authenticated" class="btn btn-primary">授权范围管理</a>
 
 		<a th:href="@{/resourceIds}" sec:authorize="authenticated" class="btn btn-primary">资源ID管理</a>
 

@@ -24,7 +24,7 @@
             <tbody>
             <tr th:each="resId, iterStat : ${resIds}">
                 <td th:text="${resId.id}">#</td>
-                <td th:text="${resId.value}">Grant Type Name</td>
+                <td th:text="${resId.value}">资源ID</td>
                 <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/resourceIds/_remove/${resId.value}|}" role="button">删除</a></td>
             </tr>
             </tbody>

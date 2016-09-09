@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='授权范围管理页面')">
+</head>
+<body>
+<div class="container">
+    <div class="col-xs-12" th:include="messages :: messages"></div>
+    <div class="col-xs-12">
+        <a href="#" th:href="@{/}" class="btn btn-primary">返回首页</a>
+    </div>
+    <div class="col-xs-8">
+        <h1>授权范围管理页面</h1>
+        <hr/>
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${scopes})"></nav>
+        <table class="table table-hover table-condensed">
+            <caption>授权范围</caption>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>授权范围</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="scope, iterStat : ${scopes}">
+                <td th:text="${scope.id}">#</td>
+                <td th:text="${scope.value}">授权范围</td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/scopes/_remove/${scope.value}|}" role="button">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${scopes})"></nav>
+    </div>
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')">
+        <h1>增加授权范围</h1>
+        <hr/>
+        <form action="#" th:action="@{''}" method="post">
+            <div class="form-group">
+                <label for="scopeValue">授权范围</label>
+                <input type="text" class="form-control" id="scopeValue" name="scopeValue" placeholder="授权范围" required="required" value="" th:value="${scopeValue}" />
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a type="button" class="btn btn-default" href="#" th:href="@{/scopes}">取消</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

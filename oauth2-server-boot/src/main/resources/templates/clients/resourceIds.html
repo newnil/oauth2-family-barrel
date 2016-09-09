@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='资源ID管理页面')">
+</head>
+<body>
+<div class="container">
+    <div class="col-xs-12" th:include="messages :: messages"></div>
+    <div class="col-xs-12">
+        <a href="#" th:href="@{/}" class="btn btn-primary">返回首页</a>
+    </div>
+    <div class="col-xs-8">
+        <h1>资源ID管理页面</h1>
+        <hr/>
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${resIds})"></nav>
+        <table class="table table-hover table-condensed">
+            <caption>资源ID</caption>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="resId, iterStat : ${resIds}">
+                <td th:text="${resId.id}">#</td>
+                <td th:text="${resId.value}">Grant Type Name</td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/resourceIds/_remove/${resId.value}|}" role="button">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${resIds})"></nav>
+    </div>
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')">
+        <h1>增加资源ID</h1>
+        <hr/>
+        <form action="#" th:action="@{''}" method="post">
+            <div class="form-group">
+                <label for="resId">ID</label>
+                <input type="text" class="form-control" id="resId" name="resId" placeholder="Resource Id" required="required" value="" th:value="${resId}" />
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a type="button" class="btn btn-default" href="#" th:href="@{/resourceIds}">取消</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

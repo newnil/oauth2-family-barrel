@@ -27,7 +27,7 @@
     <h1>你好，世界！</h1>
 
         <nav aria-label="Page navigation" th:fragment="page-navigation(pageable)">
-          <ul class="pagination">
+          <ul class="pagination" th:if="${pageable.totalPages}">
             <li th:class="${pageable.hasPrevious()}? '' : 'disabled' ">
               <a href="#" th:href="${pageable.hasPrevious()}? @{''(page=${pageable.number - 1})} : '#' " aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>

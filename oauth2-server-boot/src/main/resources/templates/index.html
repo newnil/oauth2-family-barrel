@@ -17,9 +17,15 @@
 
 		<a th:href="@{/login.html}" sec:authorize="anonymous" class="btn btn-primary">Login</a>
 
+		<hr/>
+
 		<a th:href="@{/roles}" sec:authorize="authenticated" class="btn btn-primary">角色管理</a>
 
 		<a th:href="@{/users}" sec:authorize="authenticated" class="btn btn-primary">用户管理</a>
+
+		<hr/>
+
+		<a th:href="@{/grantTypes}" sec:authorize="authenticated" class="btn btn-primary">授权方式管理</a>
 
 	</div>
 </div>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:include="bootstrap :: head (page_title='授权方式管理页面')">
+</head>
+<body>
+<div class="container">
+    <div class="col-xs-12" th:include="messages :: messages"></div>
+    <div class="col-xs-12">
+        <a href="#" th:href="@{/}" class="btn btn-primary">返回首页</a>
+    </div>
+    <div class="col-xs-8">
+        <h1>授权方式管理</h1>
+        <hr/>
+
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${grantTypes})"></nav>
+        <table class="table table-hover table-condensed">
+            <caption>授权方式</caption>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>授权方式</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="grantType, iterStat : ${grantTypes}">
+                <td th:text="${iterStat.count}">#</td>
+                <td th:text="${grantType.value}">Grant Type Name</td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/grantTypes/_remove/${grantType.value}|}" role="button">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${grantTypes})"></nav>
+
+    </div>
+    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')">
+        <h1>增加授权方式</h1>
+        <hr/>
+        <form action="#" th:action="@{''}" method="post">
+            <div class="form-group">
+                <label for="grantTypeName">授权方式名</label>
+                <input type="text" class="form-control" id="grantTypeName" name="grantTypeName" placeholder="授权方式名" required="required" value="" th:value="${grantTypeName}" />
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a type="button" class="btn btn-default" href="#" th:href="@{/roles}">取消</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -19,14 +19,20 @@
 
 		<hr/>
 
+		<a th:href="@{/oauth/tokens}" sec:authorize="authenticated" class="btn btn-primary">Token管理</a>
+
+		<hr/>
+
 		<a th:href="@{/roles}" sec:authorize="authenticated" class="btn btn-primary">角色管理</a>
 
 		<a th:href="@{/users}" sec:authorize="authenticated" class="btn btn-primary">用户管理</a>
 
 		<hr/>
 
+		<a th:href="@{/clientDetails}" sec:authorize="authenticated" class="btn btn-primary">客户端管理</a>
+
 		<a th:href="@{/grantTypes}" sec:authorize="authenticated" class="btn btn-primary">授权方式管理</a>
-		
+
 		<a th:href="@{/scopes}" sec:authorize="authenticated" class="btn btn-primary">授权范围管理</a>
 
 		<a th:href="@{/resourceIds}" sec:authorize="authenticated" class="btn btn-primary">资源ID管理</a>

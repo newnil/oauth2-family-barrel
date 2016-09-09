@@ -51,7 +51,7 @@ public class DefaultClientDetailsConfig implements InitializingBean {
 
         clientDetails = new BaseClientDetails("test-res-client", null, null, null, null);
         clientDetails.setClientSecret("test-res-client-secret-123");
-        clientDetails.setRegisteredRedirectUri(Collections.emptySet());
+        clientDetails.setRegisteredRedirectUri(Collections.singleton("http://test.com"));
 
         oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
     }

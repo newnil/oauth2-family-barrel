@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addErrorMessage;
 import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addSuccessMessage;
+import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addWarningMessage;
 
 @Controller
 @RequestMapping("/users")
@@ -201,7 +202,7 @@ public class UserAdminController {
                 addSuccessMessage(attributes, "用户 " + username + " 已删除。");
                 return userEntity;
             }).orElseGet(() -> {
-                addSuccessMessage(attributes, "没有找到 " + username + " 用户。");
+                addWarningMessage(attributes, "没有找到 " + username + " 用户。");
                 return null;
             });
         }

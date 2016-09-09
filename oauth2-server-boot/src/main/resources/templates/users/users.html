@@ -4,11 +4,11 @@
 </head>
 <body>
 <div class="container">
-    <div class="col-xs-12" th:include="messages :: messages"></div>
-    <div class="col-xs-12">
+    <div class="col-lg-12" th:include="messages :: messages"></div>
+    <div class="col-lg-12">
         <a href="#" th:href="@{/}" class="btn btn-primary">返回首页</a>
     </div>
-    <div class="col-xs-8">
+    <div class="col-lg-8">
         <h1>用户列表</h1>
         <hr/>
 
@@ -40,7 +40,7 @@
         <nav aria-label="Page navigation" th:include="bootstrap :: page-navigation (pageable=${users})"></nav>
 
     </div>
-    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${editUser}">
+    <div class="col-lg-4" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${editUser}">
         <h1>编辑用户</h1>
         <hr/>
         <form action="#" th:action="@{/users/_update}" method="post" th:object="${editUser}">
@@ -70,7 +70,7 @@
             <a type="button" class="btn btn-default" href="#" th:href="@{/users}">取消</a>
         </form>
     </div>
-    <div class="col-xs-4" sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${editUser}">
+    <div class="col-lg-4" sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${editUser}">
         <h1>增加用户</h1>
         <hr/>
         <form action="#" th:action="@{/users/_create}" method="post">

@@ -121,12 +121,12 @@ public class UserAdminController {
 
         if (!StringUtils.isEmpty(password)) {
             if (!checkPasswordValidation(password, passwordConfirmation, attributes)) {
-                return "redirect:/users";
+                return "redirect:/users?edit=" + username;
             }
         }
 
         if (!checkRoleValidation(roles, attributes)) {
-            return "redirect:/users";
+            return "redirect:/users?edit=" + username;
         }
 
         userRepository.findOneByUsername(username).map(userEntity -> {

@@ -25,7 +25,8 @@
             <tr th:each="resId, iterStat : ${resIds}">
                 <td th:text="${resId.id}">#</td>
                 <td th:text="${resId.value}">资源ID</td>
-                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/resourceIds/_remove/${resId.value}|}" role="button">删除</a></td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" th:attr="data-remove-confirm=|确认要删除资源ID ${resId.value} 吗？|"
+                       href="#" th:href="@{|/resourceIds/_remove/${resId.value}|}" role="button">删除</a></td>
             </tr>
             </tbody>
         </table>

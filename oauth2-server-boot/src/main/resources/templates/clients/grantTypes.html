@@ -26,7 +26,8 @@
             <tr th:each="grantType, iterStat : ${grantTypes}">
                 <td th:text="${grantType.id}">#</td>
                 <td th:text="${grantType.value}">Grant Type Name</td>
-                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/grantTypes/_remove/${grantType.value}|}" role="button">删除</a></td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" th:attr="data-remove-confirm=|确认要删除授权方式 ${grantType.value} 吗？|"
+                       href="#" th:href="@{|/grantTypes/_remove/${grantType.value}|}" role="button">删除</a></td>
             </tr>
             </tbody>
         </table>

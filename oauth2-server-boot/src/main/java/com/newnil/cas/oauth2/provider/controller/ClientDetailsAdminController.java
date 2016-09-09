@@ -1,5 +1,7 @@
 package com.newnil.cas.oauth2.provider.controller;
 
+import com.newnil.cas.oauth2.provider.dao.entity.ClientDetailsToScopesXrefEntity;
+import com.newnil.cas.oauth2.provider.dao.entity.RedirectUriEntity;
 import com.newnil.cas.oauth2.provider.dao.repository.ClientDetailsRepository;
 import com.newnil.cas.oauth2.provider.dao.repository.GrantTypeRepository;
 import com.newnil.cas.oauth2.provider.dao.repository.ResourceIdRepository;
@@ -27,10 +29,9 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addErrorMessage;
-import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addSuccessMessage;
-import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.addWarningMessage;
+import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.*;
 
 @Slf4j
 @Controller
@@ -57,7 +58,34 @@ public class ClientDetailsAdminController {
     private OAuth2DatabaseClientDetailsService clientDetailsService;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
-    public String listAll(Model model, Pageable pageable) {
+    public String listAll(@RequestParam(name = "edit", required = false) String editClientDetails, Model model, Pageable pageable) {
+
+        if (!StringUtils.isEmpty(editClientDetails)) {
+            clientDetailsRepository.findOneByClientId(editClientDetails).map(clientDetailsEntity -> {
+
+                model.addAttribute("clientId", clientDetailsEntity.getClientId());
+                model.addAttribute("accessTokenValiditySeconds", clientDetailsEntity.getAccessTokenValiditySeconds());
+                model.addAttribute("refreshTokenValiditySeconds", clientDetailsEntity.getRefreshTokenValiditySeconds());
+                model.addAttribute("selectedGrantTypes", clientDetailsEntity.getAuthorizedGrantTypeXrefs().stream().map(
+                        xref -> xref.getGrantType().getValue()
+                ).collect(Collectors.toList()));
+                model.addAttribute("selectedScopes", clientDetailsEntity.getScopeXrefs().stream().map(
+                        xref -> xref.getScope().getValue()
+                ).collect(Collectors.toList()));
+                model.addAttribute("selectedAutoApproveScopes", clientDetailsEntity.getScopeXrefs().stream()
+                        .filter(ClientDetailsToScopesXrefEntity::getAutoApprove).map(
+                                xref -> xref.getScope().getValue()
+                        ).collect(Collectors.toList())
+                );
+                model.addAttribute("selectedResourceIds", clientDetailsEntity.getResourceIdXrefs().stream().map(
+                        xref -> xref.getResourceId().getValue()
+                ).collect(Collectors.toList()));
+                model.addAttribute("redirectUris", clientDetailsEntity.getRedirectUris().stream()
+                        .map(RedirectUriEntity::getValue).collect(Collectors.joining(System.lineSeparator()))
+                );
+                return null;
+            });
+        }
 
         model.addAttribute("clientDetailsList", clientDetailsRepository.findAll(pageable));
         model.addAttribute("grantTypes", grantTypeRepository.findAll());
@@ -177,6 +205,117 @@ public class ClientDetailsAdminController {
         clientDetailsService.addClientDetails(baseClientDetails);
 
         addSuccessMessage(attributes, "客户端 " + clientId + " 注册成功。");
+
+        return "redirect:/clientDetails";
+    }
+
+    @RequestMapping(path = "/_update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = {MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_XHTML_XML_VALUE})
+    public String update(@RequestParam("clientId") String clientId,
+                         @RequestParam(name = "clientSecret", required = false) String clientSecret,
+                         @RequestParam(name = "accessTokenValiditySeconds", required = false) Integer accessTokenValiditySeconds,
+                         @RequestParam(name = "refreshTokenValiditySeconds", required = false) Integer refreshTokenValiditySeconds,
+                         @RequestParam(name = "grantTypes", defaultValue = "") List<String> grantTypes,
+                         @RequestParam(name = "scopes", defaultValue = "") List<String> scopes,
+                         @RequestParam(name = "autoApproveAll", defaultValue = "false") boolean autoApproveAll,
+                         @RequestParam(name = "autoApproveScopes", defaultValue = "") List<String> autoApproveScopes,
+                         @RequestParam(name = "resourceIds", defaultValue = "") List<String> resourceIds,
+                         @RequestParam("redirectUris") String redirectUris,
+                         RedirectAttributes attributes) {
+
+        if (!clientDetailsRepository.findOneByClientId(clientId).isPresent()) {
+            addErrorMessage(attributes, "找不到客户端ID " + clientId);
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        if (!StringUtils.isEmpty(clientSecret)) {
+            if (!PASSWORD_WORD_PATTERN.matcher(clientSecret).matches()) {
+                addErrorMessage(attributes, "客户端密码含有非法字符。（只能使用[a-zA-Z0-9]，至少6位）");
+                resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                        scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+                return "redirect:/clientDetails?edit=" + clientId;
+            }
+        }
+
+        if (accessTokenValiditySeconds != null && accessTokenValiditySeconds < 0) {
+            addErrorMessage(attributes, "AccessToken有效秒数不能小于零。");
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        if (refreshTokenValiditySeconds != null && refreshTokenValiditySeconds < 0) {
+            addErrorMessage(attributes, "RefreshToken有效秒数不能小于零。");
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        // 检查授权方式
+        if (!checkGrantTypeValidation(grantTypes, attributes)) {
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        // 检查授权范围
+        if (!checkScopeValidation(scopes, attributes)) {
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        // 检查自动授权范围
+        if (!checkScopeValidation(autoApproveScopes, attributes)) {
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        // 检查资源ID
+        if (!checkResourceIdValidation(resourceIds, attributes)) {
+            resetRequestParams(clientId, accessTokenValiditySeconds, refreshTokenValiditySeconds, grantTypes,
+                    scopes, autoApproveAll, autoApproveScopes, resourceIds, redirectUris, attributes);
+            return "redirect:/clientDetails?edit=" + clientId;
+        }
+
+        Set<String> redirectUrisList = new HashSet<>();
+        if (!StringUtils.isEmpty(redirectUris)) {
+            LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(redirectUris));
+            String line;
+            try {
+                while ((line = lineNumberReader.readLine()) != null) {
+                    redirectUrisList.add(line);
+                }
+            } catch (IOException e) {
+                log.warn("IOException while parsing redirect Uris: " + redirectUris, e);
+            }
+        }
+
+        BaseClientDetails baseClientDetails = (BaseClientDetails) clientDetailsService.loadClientByClientId(clientId);
+
+        baseClientDetails.setClientId(clientId);
+        baseClientDetails.setAccessTokenValiditySeconds(accessTokenValiditySeconds);
+        baseClientDetails.setRefreshTokenValiditySeconds(refreshTokenValiditySeconds);
+        baseClientDetails.setAuthorizedGrantTypes(grantTypes);
+        baseClientDetails.setScope(scopes);
+        if (autoApproveAll) {
+            baseClientDetails.setAutoApproveScopes(Collections.singleton("true"));
+        } else {
+            baseClientDetails.setAutoApproveScopes(autoApproveScopes);
+        }
+        baseClientDetails.setResourceIds(resourceIds);
+        baseClientDetails.setRegisteredRedirectUri(redirectUrisList);
+
+        clientDetailsService.updateClientDetails(baseClientDetails);
+
+        if (!StringUtils.isEmpty(clientSecret)) {
+            clientDetailsService.updateClientSecret(clientId, clientSecret);
+        }
+
+        addSuccessMessage(attributes, "客户端 " + clientId + " 更新成功。");
 
         return "redirect:/clientDetails";
     }

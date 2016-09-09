@@ -31,7 +31,8 @@
                     <span class="label label-primary" th:each="roleXref : ${user.roles}" th:text="${roleXref.role.name}">ADMIN</span>
                 </td>
                 <td>
-                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/users/_remove/${user.username}|}" role="button">删除</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" th:attr="data-remove-confirm=|确认要删除用户 ${user.username} 吗？|"
+                       href="#" th:href="@{|/users/_remove/${user.username}|}" role="button">删除</a>
                     <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-warning" href="#" th:href="@{'' (edit=${user.username})}" role="button">编辑</a>
                 </td>
             </tr>

@@ -25,7 +25,8 @@
             <tr th:each="scope, iterStat : ${scopes}">
                 <td th:text="${scope.id}">#</td>
                 <td th:text="${scope.value}">授权范围</td>
-                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/scopes/_remove/${scope.value}|}" role="button">删除</a></td>
+                <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" th:attr="data-remove-confirm=|确认要删除授权范围 ${scope.value} 吗？|"
+                       href="#" th:href="@{|/scopes/_remove/${scope.value}|}" role="button">删除</a></td>
             </tr>
             </tbody>
         </table>

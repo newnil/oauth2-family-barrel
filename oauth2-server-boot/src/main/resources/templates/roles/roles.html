@@ -26,7 +26,8 @@
                 <tr th:each="role, iterStat : ${roles}">
                     <td th:text="${role.id}">#</td>
                     <td th:text="${role.name}">Role Name</td>
-                    <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" href="#" th:href="@{|/roles/_remove/${role.name}|}" role="button">删除</a></td>
+                    <td><a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger" th:attr="data-remove-confirm=|确认要删除 ${role.name} 角色吗？|"
+                           href="#" th:href="@{|/roles/_remove/${role.name}|}" role="button">删除</a></td>
                 </tr>
             </tbody>
         </table>

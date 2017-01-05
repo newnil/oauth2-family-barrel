@@ -1,7 +1,7 @@
 package com.newnil.cas.oauth2.provider.controller;
 
 import com.newnil.cas.oauth2.provider.dao.entity.RoleEntity;
-import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXRef;
+import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXrefEntity;
 import com.newnil.cas.oauth2.provider.dao.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.newnil.cas.oauth2.provider.webhelper.RedirectMessageHelper.*;
@@ -74,7 +75,7 @@ public class RoleAdminController {
             roleRepository.findOneByName(roleName.toUpperCase()).map(
                     roleEntity -> {
 
-                        List<UserRoleXRef> xRefList = roleEntity.getUsers();
+                        Set<UserRoleXrefEntity> xRefList = roleEntity.getUsers();
                         if (xRefList.isEmpty()) {
 
                             roleRepository.delete(roleEntity);

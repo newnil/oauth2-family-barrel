@@ -1,7 +1,7 @@
 package com.newnil.cas.oauth2.provider.controller;
 
 import com.newnil.cas.oauth2.provider.dao.entity.UserEntity;
-import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXRef;
+import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXrefEntity;
 import com.newnil.cas.oauth2.provider.dao.repository.RoleRepository;
 import com.newnil.cas.oauth2.provider.dao.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,10 +99,10 @@ public class UserAdminController {
         UserEntity userEntity = UserEntity.builder().username(username).password(passwordEncoder.encode(password)).build();
 
         userEntity.setRoles(roles.stream().map(
-                role -> UserRoleXRef.builder().user(userEntity).role(roleRepository.findOneByName(role)
+                role -> UserRoleXrefEntity.builder().user(userEntity).role(roleRepository.findOneByName(role)
                         // 之前都检查过了应该不会抛错
                         .<RuntimeException>orElseThrow(() -> new RuntimeException("角色 " + role + " 不存在。"))).build()
-        ).collect(Collectors.toList()));
+        ).collect(Collectors.toSet()));
 
         userRepository.save(userEntity);
 
@@ -136,12 +136,12 @@ public class UserAdminController {
             }
 
             // removes
-            List<UserRoleXRef> removes = userEntity.getRoles().stream().filter(xref -> !roles.contains(xref.getRole().getName())).collect(Collectors.toList());
+            List<UserRoleXrefEntity> removes = userEntity.getRoles().stream().filter(xref -> !roles.contains(xref.getRole().getName())).collect(Collectors.toList());
             // origin values
             List<String> originValues = userEntity.getRoles().stream().map(xref -> xref.getRole().getName()).collect(Collectors.toList());
             // new ones
-            List<UserRoleXRef> newOnes = roles.stream().filter(role -> !originValues.contains(role)).map(
-                    role -> UserRoleXRef.builder().user(userEntity).role(roleRepository.findOneByName(role)
+            List<UserRoleXrefEntity> newOnes = roles.stream().filter(role -> !originValues.contains(role)).map(
+                    role -> UserRoleXrefEntity.builder().user(userEntity).role(roleRepository.findOneByName(role)
                             // 之前都检查过了应该不会抛错
                             .<RuntimeException>orElseThrow(() -> new RuntimeException("找不到 " + role + " 角色"))).build()
             ).collect(Collectors.toList());

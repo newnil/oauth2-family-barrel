@@ -2,7 +2,7 @@ package com.newnil.cas.oauth2.provider.config;
 
 import com.newnil.cas.oauth2.provider.dao.entity.RoleEntity;
 import com.newnil.cas.oauth2.provider.dao.entity.UserEntity;
-import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXRef;
+import com.newnil.cas.oauth2.provider.dao.entity.UserRoleXrefEntity;
 import com.newnil.cas.oauth2.provider.dao.repository.RoleRepository;
 import com.newnil.cas.oauth2.provider.dao.repository.UserRepository;
 import com.newnil.cas.oauth2.provider.dao.repository.UserRoleXrefRepository;
@@ -60,7 +60,7 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
 
 
         defaultRoleEntities.stream().forEach(
-                roleEntity -> userRoleXrefRepository.save(UserRoleXRef.builder().user(defaultAdminUserEntity).role(roleEntity).build())
+                roleEntity -> userRoleXrefRepository.save(UserRoleXrefEntity.builder().user(defaultAdminUserEntity).role(roleEntity).build())
         );
 
         UserEntity defaultUserEntity = userRepository.findOneByUsername(DEFAULT_USER_USERNAME).orElseGet(() -> {
@@ -70,7 +70,7 @@ public class DefaultUserAndRolesConfig implements InitializingBean {
                     .build();
 
             roleRepository.findOneByName("USER").ifPresent(roleEntity ->
-                    userEntity.setRoles(Collections.singletonList(UserRoleXRef.builder().user(userEntity).role(roleEntity).build())));
+                    userEntity.setRoles(Collections.singleton(UserRoleXrefEntity.builder().user(userEntity).role(roleEntity).build())));
 
             return userRepository.save(userEntity);
         });

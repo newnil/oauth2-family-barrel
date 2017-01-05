@@ -3,51 +3,28 @@ package com.newnil.cas.oauth2.provider.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@EnableWebSecurity
 @EnableJpaAuditing
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        // @formatter:off
-        web
-            .ignoring()
-                .antMatchers("/webjars/**")
-                .antMatchers("/js/**")
-                .antMatchers("/h2-console/**")
-        ;
-        // @formatter:on
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // @formatter:off
-        auth
-            .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-        // @formatter:on
     }
 
     @Override
@@ -56,23 +33,41 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                  http
             .authorizeRequests()
             	.antMatchers(HttpMethod.GET, "/").permitAll()
+                .anyRequest().authenticated()
             	.and()
-            .authorizeRequests()
-                .antMatchers("/login.html").permitAll()
-                .anyRequest().hasRole("USER")
-                .and()
             .exceptionHandling()
                 .accessDeniedPage("/login.html?authorization_error=true")
                 .and()
             .logout()
-            	.logoutUrl("/logout")
-                .logoutSuccessUrl("/login.html")
+            	.permitAll()
                 .and()
             .formLogin()
-            	.loginProcessingUrl("/login")
-                .failureUrl("/login.html?authentication_error=true")
-                .defaultSuccessUrl("/")
-                .loginPage("/login.html");
+                .loginPage("/login.html")
+                 .permitAll();
         // @formatter:on
+    }
+
+    @Bean
+    public AuthenticationTrustResolver authenticationTrustResolver() {
+        return new AuthenticationTrustResolverImpl();
+    }
+
+    @Bean
+    public AuditorAware<String> auditorAwareBean(@Autowired AuthenticationTrustResolver authenticationTrustResolver) {
+        return () -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || authenticationTrustResolver.isAnonymous(authentication)) {
+                return "@SYSTEM";
+            }
+
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof String) {
+                return (String) principal;
+            } else if (principal instanceof UserDetails) {
+                return ((UserDetails) principal).getUsername();
+            } else {
+                return String.valueOf(principal);
+            }
+        };
     }
 }

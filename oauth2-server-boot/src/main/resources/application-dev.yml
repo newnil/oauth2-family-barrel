@@ -25,3 +25,7 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+
+
+security:
+    ignored: /resources/**, /webjars/**, /js/**, /h2-console/**

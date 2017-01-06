@@ -22,7 +22,7 @@
         <java.version>1.8</java.version>
         <webjars.bootstrap.version>3.3.6</webjars.bootstrap.version>
         <webjars.jquery.version>2.2.3</webjars.jquery.version>
-        <webjars.fontawsome.version>4.5.0</webjars.fontawsome.version>
+        <webjars.fontawsome.version>4.7.0</webjars.fontawsome.version>
         <webjars.ionicons.version>2.0.1</webjars.ionicons.version>
 
         <commons.collections4.version>4.0</commons.collections4.version>

@@ -10,7 +10,7 @@
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" th:href="@{/webjars/fontawesome/4.5.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" th:href="@{/webjars/fontawesome/4.7.0/css/font-awesome.min.css}"/>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" th:href="@{/webjars/fontawesome/4.5.0/css/font-awesome.min.css}"/>
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" th:href="@{/webjars/ionicons/2.0.1/css/ionicons.min.css}"/>
     <!-- Theme style -->
@@ -257,12 +257,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header" th:fragment="${content-header}">
             <h1>
-                <h1>Index Page</h1>
-                <p>Welcome, <span th:text="${#authentication.name}">User Name</span>!</p>
+                <h1>Your dashboard</h1>
+                <p>Hello, <span th:text="${#authentication.name}">User Name</span>, what should we do today?</p>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                <li class="active">Here</li>
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             </ol>
         </section>
 
@@ -271,9 +270,7 @@
 
             <!-- Your Page Content Here -->
 
-		<form th:action="@{/logout}" method="post" role="form" sec:authorize="authenticated">
-			<button class="btn btn-default" type="submit">Logout</button>
-		</form>
+
 
 		<a th:href="@{/login.html}" sec:authorize="anonymous" class="btn btn-primary">Login</a>
 

@@ -8,4 +8,4 @@ server:
     context-path: /security
 
 security:
-    ignored: /resources/**, /webjars/**, /js/**
+    ignored: /resources/**, /webjars/**

@@ -28,4 +28,4 @@ logging:
 
 
 security:
-    ignored: /resources/**, /webjars/**, /js/**, /h2-console/**
+    ignored: /resources/**, /webjars/**, /h2-console/**

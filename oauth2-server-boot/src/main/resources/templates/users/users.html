@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:include="template/dashboard :: head('角色管理页面')">
+<head th:include="template/dashboard :: head('用户与权限管理 | 用户管理页面')">
     <!-- This block will be replaced by template. -->
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -78,7 +78,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="box" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${editUser}">
-                        <div class="box-header">
+                        <div class="box-header with-border">
                             <h3 class="box-title">编辑用户</h3>
                         </div>
                         <form action="#" th:action="@{/users/_update}" method="post" th:object="${editUser}">
@@ -114,7 +114,7 @@
                     </div>
 
                     <div class="box" sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${editUser}">
-                        <div class="box-header">
+                        <div class="box-header with-border">
                             <h3 class="box-title">增加用户</h3>
                         </div>
                         <form action="#" th:action="@{/users/_create}" method="post">
@@ -167,6 +167,11 @@
 <th:block th:replace="template/dashboard :: required-js-scripts">
     <!-- This block will be replaced by template. -->
 </th:block>
+<script type="text/javascript">
+    $(function() {
+       activeMenus('用户管理')
+    });
+</script>
 </body>
 </html>
 

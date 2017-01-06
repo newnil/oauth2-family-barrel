@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:include="template/dashboard :: head('角色管理页面')">
+<head th:include="template/dashboard :: head('用户与权限管理 | 角色管理页面')">
     <!-- This block will be replaced by template. -->
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -71,8 +71,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-tittle">增加角色</h3>
+                        <div class="box-header with-border">
+                            <h3 class="box-title">增加角色</h3>
                         </div>
                         <form action="#" th:action="@{''}" method="post">
                             <div class="box-body">
@@ -107,5 +107,10 @@
 <th:block th:replace="template/dashboard :: required-js-scripts">
     <!-- This block will be replaced by template. -->
 </th:block>
+<script type="text/javascript">
+    $(function() {
+       activeMenus('角色管理')
+    });
+</script>
 </body>
 </html>

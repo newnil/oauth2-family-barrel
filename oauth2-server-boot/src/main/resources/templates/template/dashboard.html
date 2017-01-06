@@ -7,7 +7,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head th:fragment="head(title)">
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <title th:text="${title}">AdminLTE 2 | Starter</title>
+  <title th:inline="text">新牛 OAuth2 全家桶 | [[ ${title} ]]</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
   <!-- Bootstrap 3.3.6 -->
@@ -199,7 +199,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../../../resources/static/resources/plugins/iCheck/icheck.min.js" th:src="@{/resources/plugins/iCheck/icheck.min.js}"></script>
 
 <script src="../../../resources/static/resources/js/site.js" th:src="@{/resources/js/site.js}"></script>
-<script>
+<script type="text/javascript">
   $(function () {
     $('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
@@ -207,6 +207,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
       increaseArea: '20%' // optional
     });
   });
+function activeMenus() {
+    if(arguments)
+        for(var i in arguments) {
+            $('ul.sidebar-menu li:contains(' + arguments[i] + ')').addClass('active');
+        }
+}
 </script>
 </th:block>
 </body>

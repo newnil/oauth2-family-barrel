@@ -4,10 +4,10 @@ This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
-<head th:fragment="head">
+<head th:fragment="head(title)">
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <title>AdminLTE 2 | Starter</title>
+  <title th:text="${title}">AdminLTE 2 | Starter</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
   <!-- Bootstrap 3.3.6 -->
@@ -23,6 +23,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="../../../resources/static/resources/css/skins/skin-blue.min.css" th:href="@{/resources/css/skins/skin-blue.min.css}"/>
+  <!-- iCheck -->
+  <link rel="stylesheet" href="../../plugins/iCheck/square/blue.css" th:href="@{/resources/plugins/iCheck/square/blue.css}"/>
+
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -385,6 +388,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
      fixed layout. -->
+
+<!-- iCheck -->
+<script src="../../../resources/static/resources/plugins/iCheck/icheck.min.js" th:src="@{/resources/plugins/iCheck/icheck.min.js}"></script>
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' // optional
+    });
+  });
+</script>
 </th:block>
 </body>
 </html>

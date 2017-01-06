@@ -1,59 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="bootstrap :: head (page_title='oauth-server-login')">
-<title>Sparklr</title>
+<head th:replace="template/dashboard :: head('登录')">
+    <!-- This block will be replaced by template. -->
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title th:text="${title}">AdminLTE 2 | Starter</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" th:href="@{/webjars/fontawesome/4.5.0/css/font-awesome.min.css}"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" th:href="@{/webjars/ionicons/2.0.1/css/ionicons.min.css}"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../../resources/static/resources/css/AdminLTE.min.css" th:href="@{/resources/css/AdminLTE.min.css}"/>
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+    <link rel="stylesheet" href="../../../resources/static/resources/css/skins/skin-blue.min.css" th:href="@{/resources/css/skins/skin-blue.min.css}"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="../../index.html" th:href="@{/}"><b>Admin</b>LTE</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">Sign in to start your session</p>
 
-<body>
+        <div class="alert alert-danger" role="alert" th:if="${param.containsKey('error')}">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-warning"></i> Woops!</h4>
 
-	<div class="container">
+            <p class="error">Your login attempt was not successful.</p>
+        </div>
+        <div class="alert alert-danger" role="alert" th:if="${param.containsKey('authorization_error')}">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-warning"></i> Woops!</h4>
 
-		<div class="col-xs-12">
-			<h1>Sparklr</h1>
-	
-			<div class="alert alert-danger" role="alert" th:if="${param.containsKey('authentication_error')}">
-				<h1>Woops!</h1>
-	
-				<p class="error">Your login attempt was not successful.</p>
-			</div>
-			<div class="alert alert-danger" role="alert" th:if="${param.containsKey('authorization_error')}">
-				<h1>Woops!</h1>
-	
-				<p class="error">You are not permitted to access that resource.</p>
-			</div>
-	
-			<div class="form-horizontal">
-				<p>We've got a grand total of 2 user: admin, user. Go ahead
-					and log in. Admin's password is "admin888", and user's password is "user888".</p>
-				<form th:action="@{/login}" method="post" role="form">
-					<fieldset>
-						<legend>
-							<h2>Login</h2>
-						</legend>
-						<div class="form-group">
-							<label for="username">Username:</label> <input id="username"
-								class="form-control" type='text' name='username'
-								value="admin" />
-						</div>
-						<div class="form-group">
-							<label for="password">Password:</label> <input id="password"
-								class="form-control" type='text' name='password' value="admin888" />
-						</div>
-						<button class="btn btn-primary" type="submit">Login</button>
-						<a th:href="@{/}" class="btn btn-default">Cancel</a>
-					</fieldset>
-				</form>
-	
-			</div>
-	
-			<div class="footer">
-				Sample application for <a
-					href="http://github.com/spring-projects/spring-security-oauth"
-					target="_blank">Spring Security OAuth</a>
-			</div>
+            <p class="error">You are not permitted to access that resource.</p>
+        </div>
+        <div class="alert alert-success" role="alert" th:if="${param.containsKey('logout')}">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-check"></i> OK</h4>
+            You've signed out.
+        </div>
+        <div class="alert alert-info" role="alert">
+            <p>We've got a grand total of 2 user: admin, user. Go ahead
+                and log in. Admin's password is "admin888", and user's password is "user888".</p>
+        </div>
+        <form th:action="@{/login.html}" method="post" role="form">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Username" name="username" value="admin"/>
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Password" name="password" value="admin888"/>
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="checkbox icheck">
+                        <label>
+                            <input type="checkbox"/> Remember Me
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
 
-		</div>
+        <div class="social-auth-links text-center">
+            <p>- OR -</p>
+            <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+                Facebook</a>
+            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+                Google+</a>
+        </div>
+        <!-- /.social-auth-links -->
 
-	</div>
+        <a href="#">I forgot my password</a><br/>
+        <a href="register.html" class="text-center">Register a new membership</a>
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<th:block th:replace="template/dashboard :: required-js-scripts">
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="../../plugins/iCheck/icheck.min.js"></script>
+<script>
+$(function () {
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+    });
+});
+</script>
+</th:block>
 </body>
 </html>

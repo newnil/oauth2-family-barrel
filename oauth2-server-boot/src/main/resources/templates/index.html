@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="template/base :: head">
+<head th:replace="template/dashboard :: head('dashboard')">
 <!-- This block will be replaced by template. -->
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -32,7 +32,7 @@
 <div class="wrapper">
 
     <!-- Main Header -->
-    <header class="main-header" th:replace="template/base :: main-header">
+    <header class="main-header" th:replace="template/dashboard :: main-header">
 
         <!-- Logo -->
         <a href="index2.html" class="logo">
@@ -200,7 +200,7 @@
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar" th:replace="template/base :: main-sidebar">
+    <aside class="main-sidebar" th:replace="template/dashboard :: main-sidebar">
 
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
@@ -303,7 +303,7 @@
 <!-- /.content-wrapper -->
 
 <!-- Main Footer -->
-<footer class="main-footer" th:replace="template/base :: main-footer">
+<footer class="main-footer" th:replace="template/dashboard :: main-footer">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
         Anything you want
@@ -312,7 +312,7 @@
     <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
 </footer>
 
-<th:block th:replace="template/base :: control-sidebar">
+<th:block th:replace="template/dashboard :: control-sidebar">
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Create the tabs -->
@@ -393,7 +393,7 @@
 </div>
 <!-- ./wrapper -->
 
-<th:block th:replace="template/base :: required-js-scripts">
+<th:block th:replace="template/dashboard :: required-js-scripts">
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->

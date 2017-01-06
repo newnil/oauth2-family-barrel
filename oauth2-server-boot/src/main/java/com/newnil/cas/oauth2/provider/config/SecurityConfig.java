@@ -24,20 +24,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-                 http
-            .authorizeRequests()
-            	.antMatchers(HttpMethod.GET, "/").permitAll()
-                .anyRequest().authenticated()
-            	.and()
-            .exceptionHandling()
-                .accessDeniedPage("/login.html?authorization_error=true")
-                .and()
-            .logout()
-            	.permitAll()
-                .and()
-            .formLogin()
-                .loginPage("/login.html")
-                 .permitAll();
+            http
+                .exceptionHandling()
+                    .accessDeniedPage("/login.html?authorization_error=true")
+                    .and()
+                .logout()
+                    .permitAll()
+                    .and()
+                .formLogin()
+                    .loginPage("/login.html")
+                    .permitAll()
+                    .and()
+                .authorizeRequests()
+                .anyRequest().authenticated();
         // @formatter:on
     }
 

@@ -98,12 +98,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label>角色</label>
-                                    <div class="checkbox">
-                                        <label th:each="role : ${roles}">
-                                            <input type="checkbox" name="roles" value="ROLE" th:value="${role.name}" th:checked="${#lists.contains(editUser.roles, role.name)}" />
-                                            <span class="label label-primary" th:text="${role.name}">角色</span>
-                                        </label>
-                                    </div>
+                                    <select multiple="multiple" name="roles" class="form-control select2">
+                                        <option value="ROLE" label="角色" th:each="role : ${roles}" th:value="${role.name}" th:label="${role.name}" th:text="${role.name}" th:selected="${#lists.contains(editUser.roles, role.name)}">角色</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="box-footer">
@@ -133,12 +130,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label>角色</label>
-                                    <div class="checkbox">
-                                        <label th:each="role : ${roles}">
-                                            <input type="checkbox" name="roles" value="ROLE" th:value="${role.name}" th:checked="${#lists.contains(#objects.nullSafe(selectedRoles, {}), role.name)}" />
-                                            <span class="label label-primary" th:text="${role.name}">角色</span>
-                                        </label>
-                                    </div>
+                                    <select multiple="multiple" name="roles" class="form-control select2">
+                                        <option value="ROLE" label="角色" th:each="role : ${roles}" th:value="${role.name}" th:label="${role.name}" th:text="${role.name}" th:selected="${#lists.contains(#objects.nullSafe(selectedRoles, {}), role.name)}">角色</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="box-footer">

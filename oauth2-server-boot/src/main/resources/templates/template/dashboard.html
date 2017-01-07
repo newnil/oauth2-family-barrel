@@ -16,16 +16,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" th:href="@{/webjars/fontawesome/4.7.0/css/font-awesome.min.css}"/>
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" th:href="@{/webjars/ionicons/2.0.1/css/ionicons.min.css}"/>
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../../../resources/static/resources/css/AdminLTE.min.css" th:href="@{/resources/css/AdminLTE.min.css}"/>
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect.
-  -->
-  <link rel="stylesheet" href="../../../resources/static/resources/css/skins/skin-blue.min.css" th:href="@{/resources/css/skins/skin-blue.min.css}"/>
   <!-- iCheck -->
-  <link rel="stylesheet" href="../../plugins/iCheck/square/blue.css" th:href="@{/resources/plugins/iCheck/square/blue.css}"/>
+  <link rel="stylesheet" href="../../../resources/static/plugins/iCheck/square/blue.css" th:href="@{/resources/plugins/iCheck/square/blue.css}"/>
+  <!-- Select2 -->
+  <link rel="stylesheet" href="../../../resources/static/resources/plugins/select2/select2.min.css" th:href="@{/resources/plugins/select2/select2.min.css}"/>
 
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../../resources/static/resources/css/AdminLTE.min.css" th:href="@{/resources/css/AdminLTE.min.css}"/>
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+    <link rel="stylesheet" href="../../../resources/static/resources/css/skins/skin-blue.min.css" th:href="@{/resources/css/skins/skin-blue.min.css}"/>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -198,6 +200,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- iCheck -->
 <script src="../../../resources/static/resources/plugins/iCheck/icheck.min.js" th:src="@{/resources/plugins/iCheck/icheck.min.js}"></script>
 
+<!-- Select2 -->
+<script src="../../../resources/static/resources/plugins/select2/select2.full.min.js" th:src="@{/resources/plugins/select2/select2.full.min.js}"></script>
+
 <script src="../../../resources/static/resources/js/site.js" th:src="@{/resources/js/site.js}"></script>
 <script type="text/javascript">
   $(function () {
@@ -206,6 +211,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
     });
+    //Initialize Select2 Elements
+    $(".select2").select2();
   });
 function activeMenus() {
     if(arguments)

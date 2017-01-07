@@ -148,6 +148,7 @@ public class OAuth2DatabaseClientDetailsService implements ClientDetailsService,
                 ).collect(Collectors.toSet());
 
         entity.getScopeXrefs().removeAll(scopeXrefEntityRemoves);
+        entity.getScopeXrefs().forEach(xref -> xref.setAutoApprove(clientDetails.isAutoApprove(xref.getScope().getValue())));
         entity.getScopeXrefs().addAll(scopeXrefEntityNewOnes);
 
         // merge resource id

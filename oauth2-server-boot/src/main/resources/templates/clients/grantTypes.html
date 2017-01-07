@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:include="template/dashboard :: head('角色管理页面')">
+<head th:include="template/dashboard :: head('授权方式管理页面')">
     <!-- This block will be replaced by template. -->
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -74,18 +74,18 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">增加授权方式</h3>
                         </div>
-                        <div class="box-body">
-                            <form action="#" th:action="@{''}" method="post">
+                        <form action="#" th:action="@{''}" method="post">
+                            <div class="box-body">
                                 <div class="form-group">
                                     <label for="grantTypeName">授权方式名</label>
                                     <input type="text" class="form-control" id="grantTypeName" name="grantTypeName" placeholder="授权方式名" required="required" value="" th:value="${grantTypeName}" />
                                 </div>
-                            </form>
-                        </div>
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">提交</button>
-                            <a type="button" class="btn btn-default" href="#" th:href="@{/grantTypes}">取消</a>
-                        </div>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                                <a type="button" class="btn btn-default" href="#" th:href="@{/grantTypes}">取消</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

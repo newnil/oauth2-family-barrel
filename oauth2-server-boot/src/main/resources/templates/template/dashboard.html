@@ -17,7 +17,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" th:href="@{/webjars/ionicons/2.0.1/css/ionicons.min.css}"/>
   <!-- iCheck -->
-  <link rel="stylesheet" href="../../../resources/static/plugins/iCheck/square/blue.css" th:href="@{/resources/plugins/iCheck/square/blue.css}"/>
+  <link rel="stylesheet" href="../../../resources/static/plugins/iCheck/all.css" th:href="@{/resources/plugins/iCheck/all.css}"/>
   <!-- Select2 -->
   <link rel="stylesheet" href="../../../resources/static/resources/plugins/select2/select2.min.css" th:href="@{/resources/plugins/select2/select2.min.css}"/>
 
@@ -210,6 +210,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
       checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
+    });
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-red',
+      radioClass: 'iradio_flat-red'
+    });
+    //Flat green color scheme for iCheck
+    $('input[type="checkbox"].flat-green, input[type="radio"].flat-green').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass: 'iradio_flat-green'
     });
     //Initialize Select2 Elements
     $(".select2").select2();

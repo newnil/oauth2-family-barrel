@@ -10,7 +10,7 @@ import java.io.IOException;
 @Slf4j
 public class JsonPersistenceConverters<IN> {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonPersistenceConverters() {
         configureObjectMapper(objectMapper);
@@ -30,10 +30,6 @@ public class JsonPersistenceConverters<IN> {
         }
     }
 
-//    protected final IN convertFromJson(String json) {
-//        return convertFromJson(json, getActualTypeOfInput());
-//    }
-
     protected final IN convertFromJson(String json, Class<? extends IN> typeOfInput) {
         if (StringUtils.isEmpty(json)) return null;
 
@@ -44,10 +40,5 @@ public class JsonPersistenceConverters<IN> {
             throw new RuntimeException(e);
         }
     }
-
-//    @SuppressWarnings("unchecked")
-//    private Class<IN> getActualTypeOfInput() {
-//        return (Class<IN>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-//    }
 
 }

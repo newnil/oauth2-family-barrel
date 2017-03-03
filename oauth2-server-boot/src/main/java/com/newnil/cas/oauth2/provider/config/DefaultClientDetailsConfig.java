@@ -43,7 +43,7 @@ public class DefaultClientDetailsConfig implements InitializingBean {
                 scope -> ScopeEntity.builder().value(scope).build()
         ).collect(Collectors.toList()));
 
-        BaseClientDetails clientDetails = new BaseClientDetails("test-client-id", null, "read,write,trust", "authorization_code", null);
+        BaseClientDetails clientDetails = new BaseClientDetails("test-client-id", null, "read,write,trust", "authorization_code,refresh_token", null);
         clientDetails.setClientSecret("test-client-id-secret-123");
         clientDetails.setRegisteredRedirectUri(Collections.emptySet());
 
@@ -52,6 +52,12 @@ public class DefaultClientDetailsConfig implements InitializingBean {
         clientDetails = new BaseClientDetails("test-res-client", null, null, null, null);
         clientDetails.setClientSecret("test-res-client-secret-123");
         clientDetails.setRegisteredRedirectUri(Collections.singleton("http://test.com"));
+
+        oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
+
+        clientDetails = new BaseClientDetails("test_password_client", null, "trust", "password", null);
+        clientDetails.setClientSecret("1234567");
+        clientDetails.setRegisteredRedirectUri(Collections.emptySet());
 
         oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
     }

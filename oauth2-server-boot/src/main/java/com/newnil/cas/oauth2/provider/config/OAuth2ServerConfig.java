@@ -5,6 +5,7 @@ import com.newnil.cas.oauth2.provider.service.OAuth2DatabaseClientDetailsService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -31,6 +32,9 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private OAuth2DatabaseClientDetailsService oAuth2DatabaseClientDetailsService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Bean
     public ApprovalStore approvalStore() {
         TokenApprovalStore tokenStore = new TokenApprovalStore();
@@ -42,7 +46,8 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints)
             throws Exception {
         // 配置授权endpoint
-        endpoints.tokenStore(tokenStoreService).approvalStore(approvalStore());
+        endpoints.tokenStore(tokenStoreService).approvalStore(approvalStore())
+        .authenticationManager(authenticationManager);
     }
 
     @Override

@@ -1,5 +1,7 @@
 # oauth2-family-barrel
 
+[![Build Status](https://travis-ci.org/newnil/oauth2-family-barrel.svg?branch=master)](https://travis-ci.org/newnil/oauth2-family-barrel)
+
 OAuth2全家桶
 
 ## 什么是 oauth2-family-barrel
